@@ -5,19 +5,19 @@ import java.util.Vector;
 
 public class Process {
     int processID;
-    int totalTime;
-    int CPUTimeUsed = 0;
-    int CPUWaitTime = 0;
-    int IOExecTime = 0;
-    int IOExtraTime = 0;
-    int processStartTime;
-    int processEndTime;
-    int currentExecution;
-    int currentTimeSlot;
+    long totalTime;
+    long CPUTimeUsed = 0;
+    long CPUWaitTime = 0;
+    long IOExecTime = 0;
+    long IOExtraTime = 0;
+    long processStartTime;
+    long processEndTime;
+    long currentExecution;
+    long currentTimeSlot;
 
-    Process() {
+    Process(long percentageOfIOBoundProcess, long processTime) {
         processID = new Random().nextInt();
-        totalTime = 0;
+        totalTime = processTime;
         CPUTimeUsed = 0;
         CPUWaitTime = 0;
         IOExecTime = 0;
@@ -28,27 +28,33 @@ public class Process {
     }
 
     class Do {
-        int operation;
-        int time;
+        long operation;
+        long time;
 
-        Do(int operation, int time) {
+        Do(long operation, long time) {
             this.operation = operation;
             this.time = time;
         }
     }
 
     Do todo() {
-        if (new Random().nextInt() % 2 == 0) {
-            return new Do(0, new Random().nextInt(100));
+        long time = new Random().nextInt(100);
+        if (time > totalTime - CPUTimeUsed - IOExecTime) {
+            time = totalTime - CPUTimeUsed - IOExecTime;
         }
-        return new Do(1, new Random().nextInt(100));
+        if (new Random().nextInt() % 2 == 0) {
+            CPUTimeUsed += time;
+            return new Do(0, time);
+        }
+        IOExecTime += time;
+        return new Do(1, time);
     }
 
-    int useCPU(int time) {
+    long useCPU(long time) {
         return time;
     }
 
-    int useIO(int time) {
+    long useIO(long time) {
         return time;
     }
 }

@@ -1,10 +1,10 @@
 package Project;
 
 public class ProcessCreator {
-    int percentageOfIOBoundProcess;
-    int processRate;
-    int nextProcessTime;
-    int timeToCreate = 0;
+    long percentageOfIOBoundProcess;
+    long processTime;
+    long nextProcessTime;
+    long timeToCreate = 0;
 
     private boolean isProcessAvailable() {
         if (System.currentTimeMillis() < timeToCreate) {
@@ -12,14 +12,14 @@ public class ProcessCreator {
         }
         return true;
     }
-
-    Process createProcess(int percentageOfIOBoundProcess, int processRate, int nextProcessTime) {
+    // 100ms -> 80% -> 80ms IO , 20ms CPU
+    Process createProcess(long percentageOfIOBoundProcess, long processTime, long nextProcessTime) {
         if (isProcessAvailable()) {
             this.nextProcessTime = nextProcessTime;
-            this.processRate = processRate;
+            this.processTime = processTime;
             this.percentageOfIOBoundProcess = percentageOfIOBoundProcess;
             timeToCreate = nextProcessTime + System.currentTimeMillis(); // 500 + 5678 => 6178
-            Process process = new Process();
+            Process process = new Process(percentageOfIOBoundProcess, processTime);
             return process;
         }
         return null;
